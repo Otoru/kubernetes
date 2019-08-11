@@ -12,6 +12,15 @@ Segue abaixo o descritivo das máquinas utilizadas no cluster:
 |      Centos 7       |   rke   | :white_check_mark: | 192.168.254.102 |   10.0.2.102  |
 |      Centos 7       |   rke   | :white_check_mark: | 192.168.254.103 |   10.0.2.103  |
 
+### Obsercações
+
+- As máquinas devem trabalhar com comunicação irrestrita entre si.
+- As máquinas conversam entre si usando o IP sencudário.
+- Os IPs primários serão a porta de entrada dos usuários (ingress).
+- O cliente de instalação deve ter chave SSH compartilhada com as máquinas acima.
+- Na necessidade de configuração de firewall, utilizar controle de borda.
+
+
 ## Estrutura final
 
 Finalizada a instalação, iremos ter a seguinte estrutura para nosso kubernetes:
@@ -21,14 +30,6 @@ Finalizada a instalação, iremos ter a seguinte estrutura para nosso kubernetes
 | 192.168.254.101 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | 192.168.254.102 |         :x:        |         :x:        | :white_check_mark: |
 | 192.168.254.103 |         :x:        |         :x:        | :white_check_mark: |
-
-### Obsercações
-
-- As máquinas devem trabalhar com comunicação irrestrita entre si.
-- As máquinas conversam entre si usando o IP sencudário.
-- Os IPs primários serão a porta de entrada dos usuários (ingress).
-- O cliente de instalação deve ter chave SSH compartilhada com as máquinas acima.
-- Na necessidade de configuração de firewall, utilizar controle de borda.
 
 ## Instalação de dependências
 
