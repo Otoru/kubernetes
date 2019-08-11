@@ -13,10 +13,10 @@ metadata:
 spec:
   tls:
    - hosts:
-     - ceph.kubernetes.local
+     - ceph.kubernetes.localhost
      secretName: tls-rookceph-ingress
   rules:
-  - host: ceph.kubernetes.local
+  - host: ceph.kubernetes.localhost
     http:
       paths:
       - path: /

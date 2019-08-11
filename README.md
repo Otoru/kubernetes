@@ -70,8 +70,8 @@ $ kubectl --kubeconfig kube_config_cluster.yml create -f rook/dashboard.yml
 
 #### Observações
 
-- O ingress é criado com o domínio `ceph.kubernetes.local`. Edite o arquivo para mudar o mesmo.
-- Para fazer testes locais aponte `ceph.kubernetes.local` para um dos nós no seu `/etc/hosts`.
+- O ingress é criado com o domínio `ceph.kubernetes.localhost`. Edite o arquivo para mudar o mesmo.
+- Para fazer testes locais aponte `ceph.kubernetes.localhost` para um dos nós no seu `/etc/hosts`.
 - Para acessar o painel use o usuário `admin`. A senha é gerada de forma aleatória. Você pode descobrir a mesma usando o comando abaixo:
 
 ```bash
@@ -116,15 +116,15 @@ $ helm --kubeconfig kube_config_cluster.yml repo add rancher-latest https://rele
 $ helm --kubeconfig kube_config_cluster.yml install rancher-latest/rancher \
   --name rancher \
   --namespace cattle-system \
-  --set hostname=rancher.kubernetes.local \
+  --set hostname=rancher.kubernetes.localhost \
   --set ingress.tls.source=tls-rancher-ingress
 ```
 
 ### Observações
 
 - A instalação foi feita utilizando `helm`. Você deve ter o mesmo instalado para fazer a instalação.
-- Assim como o caso anterior, este ingress é criado com o domínio `rancher.kubernetes.local`. Edite o arquivo para mudar o mesmo.
-- Para realizar testes locais, aponte o domínio `rancher.kubernetes.local` para um dos nós no seu `/etc/hosts`.
+- Assim como o caso anterior, este ingress é criado com o domínio `rancher.kubernetes.localhost`. Edite o arquivo para mudar o mesmo.
+- Para realizar testes locais, aponte o domínio `rancher.kubernetes.localhost` para um dos nós no seu `/etc/hosts`.
 
 ## Ansible
 
