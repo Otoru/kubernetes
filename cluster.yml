@@ -1,0 +1,50 @@
+nodes:
+  - address: 192.168.254.101
+    internal_address: 10.0.2.101
+    role:
+    - worker
+    - controlplane
+    - etcd
+    user: rke
+
+  - address: 192.168.254.102
+    internal_address: 10.0.2.102
+    role:
+    - worker
+    user: rke
+
+  - address: 192.168.254.103
+    internal_address: 10.0.2.103
+    role:
+    - worker
+    user: rke
+
+cluster_name: github
+kubernetes_version: v1.13.5-rancher1-2
+system_images:
+  kubernetes: rancher/hyperkube:v1.13.5-rancher1
+
+services:
+  kubelet:
+    cgroup-driver: systemd
+    fail-swap-on: true
+    extra_args:
+      volume-plugin-dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
+      max-pods: 250
+    extra_binds:
+      - /usr/libexec/kubernetes/kubelet-plugins/volume/exec:/usr/libexec/kubernetes/kubelet-plugins/volume/exec
+
+ssh_key_path: ~/.ssh/id_rsa
+ssh_agent_auth: false
+
+dns:
+  provider: coredns
+
+authentication:
+  strategy: x509
+
+authorization:
+  mode: rbac
+
+ingress:
+  provider: nginx

@@ -1,0 +1,132 @@
+- hosts: all
+  become: true
+  become_method: sudo
+
+  pre_tasks:
+    - name: Install epel
+      raw: yum -y install epel-release
+      changed_when: False
+      become: true
+
+    - name: Update yum
+      raw: yum -y update
+      changed_when: False
+      become: true
+
+    - name: Install pip
+      raw: yum -y install python-pip
+      changed_when: False
+      become: true
+
+    - name: Update pip
+      raw: pip install --upgrade pip
+      changed_when: False
+      become: true
+
+  tasks:
+    - name: Remove swap of /etc/fstab
+      mount:
+        name: swap
+        fstype: swap
+        state: absent
+
+    - name: Disable swap
+      command: swapoff -a
+
+    - name: Add NTP role to linux
+      include_role:
+        name: geerlingguy.ntp
+      vars:
+        ntp_timezone: America/Sao_Paulo
+        ntp_manage_config: true
+        ntp_servers:
+          - "pool.ntp.br iburst"
+          - "ntp.cais.rnp.br iburst"
+          - "ntp.ufsc.br iburst"
+
+    - name: Install Docker dependencies
+      yum: 
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+          - ntpdate
+
+    - name: Add docker repository
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docer-ce.repo
+        mode: 0644
+        force: yes
+      become: yes
+
+    - name: Install Docker
+      yum: 
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
+    - name: "Add 'rke' user to 'docker' group"
+      user:
+        name: rke
+        groups: docker
+        append: yes
+
+    - name: "Starting and Enabling services"
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items:
+        - docker
+        - ntpd
+
+    - name: active 'net.bridge.bridge-nf-call-iptables'
+      sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: "1"
+        sysctl_set: yes
+
+    - name: Carrega modulos rke
+      modprobe: 
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - br_netfilter
+        - ip6_udp_tunnel
+        - ip_set
+        - ip_set_hash_ip
+        - ip_set_hash_net
+        - iptable_filter
+        - iptable_nat
+        - iptable_mangle
+        - iptable_raw
+        - nf_conntrack_netlink
+        - nf_conntrack
+        - nf_conntrack_ipv4
+        - nf_defrag_ipv4
+        - nf_nat
+        - nf_nat_ipv4
+        - nf_nat_masquerade_ipv4
+        - nfnetlink
+        - udp_tunnel
+        - veth
+        - vxlan
+        - x_tables
+        - xt_addrtype
+        - xt_conntrack
+        - xt_comment
+        - xt_mark
+        - xt_multiport
+        - xt_nat
+        - xt_recent
+        - xt_set
+        - xt_statistic
+        - xt_tcpudp
