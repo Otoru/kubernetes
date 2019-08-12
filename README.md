@@ -65,6 +65,10 @@ $ rke up                                    # O RKE instala nosso kubernetes
 
 Com isso já temos nosso cluster configurado.
 
+## TLS
+
+Em várias aplicações iremos utilizar TLS nas interfaces WEB. Para desenvolvimento, recomendo o uso do [mkcert](https://github.com/FiloSottile/mkcert) para simular um certificado válido.
+
 ## Persistência de dados
 
 Será utilizado Ceph para persistência de dados no cluster. Para configuração do mesmo, você deve usar os comandos abaixo:
@@ -81,6 +85,8 @@ $ kubectl --kubeconfig kube_config_cluster.yml apply -f rook/storage.yml
 O Ceph possui um dashboard web que nos permite monitorar o status da operação. Vamos instalar o mesmo usando os comandos abaixo:
 
 ```bash
+# O comando abaixo é para gerar um certificado alto assinado
+# Não é necessário caso você tenha gerado os certificados com mkcert
 $ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt
 $ kubectl --kubeconfig kube_config_cluster.yml \
     -n rook-ceph create secret tls tls-rookceph-ingress \
@@ -133,6 +139,10 @@ $ kubectl --kubeconfig kube_config_cluster.yml create clusterrolebinding tiller 
 $ helm --kubeconfig kube_config_cluster.yml init --service-account tiller --upgrade
 # O comando abaixo serve para aguardar o deploy do tiller
 $ kubectl --kubeconfig kube_config_cluster.yml -n kube-system  rollout status deploy/tiller-deploy
+$ kubectl create ns cattle-system
+$ kubectl -n cattle-system create secret tls tls-rancher-ingress \
+  --cert=tls.crt \
+  --key=tls.key
 $ helm --kubeconfig kube_config_cluster.yml repo add rancher-latest https://releases.rancher.com/server-charts/latest
 $ helm --kubeconfig kube_config_cluster.yml install rancher-latest/rancher \
   --name rancher \

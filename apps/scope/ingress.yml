@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: weave-dashboard-ingress
+  namespace: weave
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+   - hosts:
+     - weave.kubernetes.loc
+     secretName: tls-weave-ingress
+  rules:
+  - host: weave.kubernetes.loc
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: weave-scope-app
+          servicePort: app
