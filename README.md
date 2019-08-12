@@ -31,15 +31,36 @@ Finalizada a instalação, iremos ter a seguinte estrutura para nosso kubernetes
 | 192.168.254.102 |         :x:        |         :x:        | :white_check_mark: |
 | 192.168.254.103 |         :x:        |         :x:        | :white_check_mark: |
 
-## Instalação de dependências
+## Cada um com seus problemas
 
-As dependências foram instaladas utilizando ansible. Após clocar o repositório, você pode fazer o mesmo processo usando o comando abaixo:
+Para realizar a instalação conforme descrito neste repositório, você precisa descobrir como instalar os seguintes programas em seu sistema operacional:
+
+- [Ansible](https://www.ansible.com/)
+- [RKE](https://rancher.com/docs/rke/latest/en/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [OpenSSL](https://www.openssl.org/)
+- [Helm](https://helm.sh/)
+
+## Instalação
+
+Segue abaixo o processo de instalação do sistema
+
+### Dependências
+
+As dependências foram instaladas utilizando ansible. Após clonar o repositório, você pode fazer o mesmo processo usando o comando abaixo:
 
 ```bash
 $ ansible all -m ping                       # Para validar a conexão com os hosts
-$ ansible-galaxy install geerlingguy.ntp    # Para permitir a configuração de NTP nos servidores
-$ ansible-playbook playbook.yml             # Para realizar a instalação das dependências
-$ rke up                                    # Para usar o RKE para realizar as configurações
+$ ansible-galaxy install geerlingguy.ntp    # Aplica a configuração de NTP nos servidores
+$ ansible-playbook playbook.yml             # Realiza a instalação das dependências
+```
+
+### Kubernetes
+
+Por fim, usamos o comando abaixo para configurar o kubernetes:
+
+```bash
+$ rke up                                    # O RKE instala nosso kubernetes
 ```
 
 Com isso já temos nosso cluster configurado.
@@ -140,3 +161,7 @@ O playbook ansible utilizado faz as seguintes tarefas:
 ## RKE
 
 Dado o arquivo `cluster.yml`, nosso kubernetes é configurado nos nodes acima citados.
+
+## Carregando aplicações
+
+Usando a [wiki](https://github.com/Otoru/kubernetes/wiki) deste projeto, tenho algum material sobre a instalação de algumas aplicações no cluster. Recomendo a leitura para fins de estudo e também para que você possa saber mais sobre oque é possível fazer com kubernetes.
