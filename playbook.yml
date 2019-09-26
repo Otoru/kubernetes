@@ -3,26 +3,45 @@
   become_method: sudo
 
   pre_tasks:
-    - name: Install epel
-      raw: yum -y install epel-release
-      changed_when: False
-      become: true
+    - name: Instalando epel-release
+      yum:
+        name: "epel-release"
+        state: latest
 
-    - name: Update yum
-      raw: yum -y update
-      changed_when: False
-      become: true
+    - name: Atualizando pacotes
+      yum:
+        name: "*"
+        state: latest
 
-    - name: Install pip
-      raw: yum -y install python-pip
-      changed_when: False
-      become: true
+    - name: Instalando PIP
+      yum:
+        name: "python-pip"
+        state: latest
 
     - name: Update pip
-      raw: pip install --upgrade pip
-      changed_when: False
-      become: true
+      pip: 
+        name: pip
+        state: latest
 
+    - name: Limpa regras do IPTables
+      iptables:
+        chain: "{{ item }}"
+        flush: yes
+      with_items:
+        - INPUT
+        - FORWARD
+        - OUTPUT
+
+    - name: Limpa regras do IPTables (NAT)
+      iptables:
+        table: nat
+        chain: '{{ item }}'
+        flush: yes
+      with_items:
+        - INPUT
+        - OUTPUT
+        - PREROUTING
+        - POSTROUTING
   tasks:
     - name: Remove swap of /etc/fstab
       mount:
@@ -73,9 +92,9 @@
           - docker-ce-cli
           - containerd.io
 
-    - name: "Add 'rke' user to 'docker' group"
+    - name: "Add 'axt' user to 'docker' group"
       user:
-        name: rke
+        name: axt
         groups: docker
         append: yes
 

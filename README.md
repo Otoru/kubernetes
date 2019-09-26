@@ -112,7 +112,7 @@ kubectl --kubeconfig kube_config_cluster.yml create -f rook/tools.yml
 # Usar o comando abaixo para verificar se o ceph-tools já está criado
 kubectl --kubeconfig kube_config_cluster.yml -n rook-ceph get pod -l "app=rook-ceph-tools"
 
-kubectl --kubeconfig kube_config_cluster.yml -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
+kubectl --kubeconfig kube_config_cluster.yml -n rook-ceph exec -it $(kubectl --kubeconfig kube_config_cluster.yml -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
 ceph dashboard ac-role-create admin-no-iscsi
 
 for scope in dashboard-settings log rgw prometheus grafana nfs-ganesha manager hosts rbd-image config-opt rbd-mirroring cephfs user osd pool monitor; do 
@@ -138,8 +138,8 @@ kubectl --kubeconfig kube_config_cluster.yml create clusterrolebinding tiller \
 helm --kubeconfig kube_config_cluster.yml init --service-account tiller --upgrade
 # O comando abaixo serve para aguardar o deploy do tiller
 kubectl --kubeconfig kube_config_cluster.yml -n kube-system  rollout status deploy/tiller-deploy
-kubectl create ns cattle-system
-kubectl -n cattle-system create secret tls tls-rancher-ingress \
+kubectl --kubeconfig kube_config_cluster.yml create ns cattle-system
+kubectl --kubeconfig kube_config_cluster.yml -n cattle-system create secret tls tls-rancher-ingress \
   --cert=tls.crt \
   --key=tls.key
 helm --kubeconfig kube_config_cluster.yml repo add rancher-latest https://releases.rancher.com/server-charts/latest
